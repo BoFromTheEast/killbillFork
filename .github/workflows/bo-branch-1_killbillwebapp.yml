@@ -2,51 +2,56 @@ name: Build and deploy JAR app to Azure Web App
 
 on:
   push:
-    branches: 
+    branches:
       - bo-branch-1
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Java version
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'microsoft'
-    
-    - name: Check Maven Packaging
-      run: |
-        mvn clean package -DskipTests
-    
-    - name: Upload artifact for deployment
-      uses: actions/upload-artifact@v4
-      with:
-        name: java-app
-        path: '${{ github.workspace }}/target/*.jar'
+      - uses: actions/checkout@v4
+
+      - name: Set up Java version
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "microsoft"
+          cache: "maven" # Add Maven caching
+
+      - name: Build with Maven
+        run: |
+          mvn clean package -DskipTests
+
+      - name: List target directory
+        run: ls -l target/ # Help debug which JAR was built
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-app
+          path: "${{ github.workspace }}/target/*.jar"
+          retention-days: 1 # Add retention policy
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
+      name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
-    - name: Download artifact from build job
-      uses: actions/download-artifact@v4
-      with:
-        name: java-app
-    
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: 'killbillwebapp'
-        slot-name: 'Production'
-        package: '*.jar'
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3B6D70C3749F4175B0B918EB2C1B858D }}
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: java-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "killbillwebapp"
+          slot-name: "Production"
+          package: "*.jar"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3B6D70C3719F4175B0B918EB2C1B858D }}
