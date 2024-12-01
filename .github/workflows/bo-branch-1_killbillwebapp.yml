@@ -20,13 +20,23 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'microsoft'
+          distribution: 'temurin'
+          cache: maven
+
+      # verify java version
+      - name: Verify Java Version
+        run: |
+          echo "JAVA_HOME is set to $JAVA_HOME"
+          java -version
+      # verify maven version
+      - name: Verify Maven Java Version
+        run: mvn -v
 
       - name: Build with Maven
         run: mvn clean install -DskipTests
 
-      - name: Maven Run
-        run: mvn -Dorg.killbill.server.properties=file:///./profiles/killbill/src/main/resources/killbill-server.properties -Dlogback.configurationFile=./profiles/killbill/src/main/resources/logback.xml jetty:run
+      - name: Maven Package
+        run: mvn package -Dorg.killbill.server.properties=file:///./profiles/killbill/src/main/resources/killbill-server.properties -Dlogback.configurationFile=./profiles/killbill/src/main/resources/logback.xml
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
