@@ -19,8 +19,11 @@ jobs:
         java-version: '17'
         distribution: 'microsoft'
     
-    - name: Build with Maven
-      run: mvn clean package -DskipTests
+    - name: Check Maven Packaging
+      run: |
+        mvn clean package -DskipTests
+        ls -la target/
+        mvn help:evaluate -Dexpression=project.packaging -q -DforceStdout
     
     - name: Upload artifact for deployment
       uses: actions/upload-artifact@v4
