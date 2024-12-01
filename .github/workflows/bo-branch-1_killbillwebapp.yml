@@ -29,7 +29,8 @@ jobs:
         run: |
           # Additional packaging configuration specific to Kill Bill
           mvn package -Dorg.killbill.server.properties=file:///github/workspace/profiles/killbill/src/main/resources/killbill-server.properties \
-          -Dlogback.configurationFile=./profiles/killbill/src/main/resources/logback.xml
+                      -Dlogback.configurationFile=./profiles/killbill/src/main/resources/logback.xml \
+                      -Djetty.port=$PORT jetty:run
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
