@@ -228,3 +228,4 @@ tmtags
 logs/
 .logs
 util/sql
+.vscode/settings.json
