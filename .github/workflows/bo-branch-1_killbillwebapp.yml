@@ -25,6 +25,12 @@ jobs:
       - name: Build with Maven
         run: mvn clean install -DskipTests
 
+      - name: Maven Package
+        run: |
+          # Additional packaging configuration specific to Kill Bill
+          mvn package -Dorg.killbill.server.properties=file:///github/workspace/profiles/killbill/src/main/resources/killbill-server.properties \
+          -Dlogback.configurationFile=./profiles/killbill/src/main/resources/logback.xml
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
