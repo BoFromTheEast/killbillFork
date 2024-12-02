@@ -228,5 +228,9 @@ tmtags
 logs/
 .logs
 util/sql
+<<<<<<< HEAD
 
 .vscode/
+=======
+.vscode/settings.json
+>>>>>>> refs/remotes/origin/bo-branch-1
