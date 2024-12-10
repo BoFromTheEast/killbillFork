@@ -124,7 +124,7 @@ public class DefaultAccount extends EntityBase implements Account {
              notes,
              isMigrated);
     }
-
+    //Centralized isPaymentDelegatedToParent and billCycleDayLocal
     public DefaultAccount(final UUID id, @Nullable final DateTime createdDate, @Nullable final DateTime updatedDate,
                           final String externalKey, final String email,
                           final String name, final Integer firstNameLength, final Currency currency,
@@ -142,8 +142,8 @@ public class DefaultAccount extends EntityBase implements Account {
         this.firstNameLength = firstNameLength;
         this.currency = currency;
         this.parentAccountId = parentAccountId;
-        this.isPaymentDelegatedToParent = isPaymentDelegatedToParent != null ? isPaymentDelegatedToParent : false;
-        this.billCycleDayLocal = billCycleDayLocal == null ? (Integer) DEFAULT_BILLING_CYCLE_DAY_LOCAL : billCycleDayLocal;
+        this.isPaymentDelegatedToParent = getDefaultIsPaymentDelegatedToParent(isPaymentDelegatedToParent);
+        this.billCycleDayLocal = getDefaultBillCycleDayLocal(billCycleDayLocal);
         this.paymentMethodId = paymentMethodId;
         this.referenceTime = referenceTime;
         this.timeZone = timeZone;
@@ -521,7 +521,15 @@ public class DefaultAccount extends EntityBase implements Account {
 
         return true;
     }
+    
+    private Integer getDefaultBillCycleDayLocal(Integer billCycleDayLocal) {
+        return billCycleDayLocal != null ? billCycleDayLocal : (Integer) DEFAULT_BILLING_CYCLE_DAY_LOCAL;
+    }
 
+    private Boolean getDefaultIsPaymentDelegatedToParent(Boolean isPaymentDelegatedToParent) {
+        return isPaymentDelegatedToParent != null ? isPaymentDelegatedToParent : false;
+    }
+    
     @Override
     public int hashCode() {
         int result = super.hashCode();
