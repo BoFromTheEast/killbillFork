@@ -93,6 +93,8 @@ public class TestPaymentWithControl extends TestIntegrationBase {
             }
         }, testPaymentControlWithControl);
 
+        
+        //Consolidates plugin property to avoid duplicate initialization
         properties = new ArrayList<PluginProperty>();
         paymentOptions = new PaymentOptions() {
             @Override
@@ -200,8 +202,8 @@ public class TestPaymentWithControl extends TestIntegrationBase {
         Assert.assertEquals(paymentWithAttempts.getTransactions().get(1).getId().toString(), paymentWithAttempts.getPaymentAttempts().get(1).getTransactionExternalKey());
 
         Assert.assertEquals(testPaymentControlWithControl.getCalls().size(), 2);
-        Assert.assertEquals(testPaymentControlWithControl.getCalls().get(TransactionType.AUTHORIZE.toString()), new Integer(1));
-        Assert.assertEquals(testPaymentControlWithControl.getCalls().get(TransactionType.CAPTURE.toString()), new Integer(1));
+        Assert.assertEquals(testPaymentControlWithControl.getCalls().get(TransactionType.AUTHORIZE.toString()), Integer.valueOf(1));
+        Assert.assertEquals(testPaymentControlWithControl.getCalls().get(TransactionType.CAPTURE.toString()), Integer.valueOf(1));
     }
 
     @Test(groups = "slow")
@@ -240,8 +242,8 @@ public class TestPaymentWithControl extends TestIntegrationBase {
         Assert.assertNotEquals(paymentWithAttempts.getTransactions().get(1).getId().toString(), paymentWithAttempts.getPaymentAttempts().get(1).getTransactionExternalKey());
 
         Assert.assertEquals(testPaymentControlWithControl.getCalls().size(), 2);
-        Assert.assertEquals(testPaymentControlWithControl.getCalls().get(TransactionType.AUTHORIZE.toString()), new Integer(1));
-        Assert.assertEquals(testPaymentControlWithControl.getCalls().get(TransactionType.VOID.toString()), new Integer(1));
+        Assert.assertEquals(testPaymentControlWithControl.getCalls().get(TransactionType.AUTHORIZE.toString()), Integer.valueOf(1));
+        Assert.assertEquals(testPaymentControlWithControl.getCalls().get(TransactionType.VOID.toString()),Integer.valueOf(1));
     }
 
     @Test(groups = "slow")
@@ -362,7 +364,7 @@ public class TestPaymentWithControl extends TestIntegrationBase {
                     .findFirst().orElse(null);
             if (nameProperty != null && nameProperty.getValue().equals(TEST_PAYMENT_WITH_CONTROL)) {
                 final Integer result = calls.get(paymentControlContext.getTransactionType());
-                calls.put(paymentControlContext.getTransactionType().toString(), result == null ? new Integer(1) : new Integer(result.intValue() + 1));
+                calls.put(paymentControlContext.getTransactionType().toString(), result == null ? Integer.valueOf(1) : Integer.valueOf(result.intValue() + 1));
             }
             return new OnSuccessPaymentControlResult() {
                 @Override
